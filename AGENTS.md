@@ -9,13 +9,14 @@ AI エージェント向けの入口です。技術スタック・コマンド�
 - 見積もりは外れる前提で、着手から merge までの実績を計測して直し続ける
 - Issue 1 件 = 1 枠 (1〜1.5h)。1 日に着手するのは最大 3 枠、稼働日は平日のみ
 - 計画の実体は GitHub (Milestones / Project #34 / Issue の依存関係) に置く。リポジトリに日程表を作らない
-- Issue に着手するときは、仕様確認の前に次を実行する (着手コミットの時刻がスループット計測の開始時刻になる)
+- Issue に着手するときは `start-issue` スキルを使う。仕様確認より先に実行する (着手コミットの時刻がスループット計測の開始時刻になる)
 
   ```bash
-  scripts/start-issue.sh <issue番号>  # worktree 作成 → 着手コミット (空) → push → Draft PR
+  /start-issue <issue番号>                          # Claude Code
+  .claude/skills/start-issue/start.sh <issue番号>   # それ以外。続きは同じディレクトリの SKILL.md に従う
   ```
 
-  Claude Code では `/start-issue <issue番号>` を使う (merge までの工程を順に進めるスキル)
+  worktree 作成 → 着手コミット (空) → push → Draft PR → 環境構築までを行う
 
 - 作業は出力された worktree (`.claude/worktrees/issue-<issue番号>`) の中で行う
 - 以降の作業はその PR に積む。別の PR を作り直さない

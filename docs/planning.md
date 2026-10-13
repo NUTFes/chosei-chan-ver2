@@ -57,14 +57,16 @@ node scripts/plan.mjs status
 
 Issue ごとに、**PR の最初のコミットから merge まで** の経過時間を計測します。休憩も工数に含めるので、除外はしません。
 
-設計 (工程 1) にはコミットが残らないため、着手時に空のコミットを打って開始時刻を記録します。次のコマンドが、worktree とブランチの作成・着手コミット・push・Draft PR 作成 (`resolve #<issue番号>` 入り) までを行います。
+設計 (工程 1) にはコミットが残らないため、着手時に空のコミットを打って開始時刻を記録します。着手は `start-issue` スキルで行います。
 
 ```bash
-scripts/start-issue.sh <issue番号> [ブランチ名]
+/start-issue <issue番号>                          # Claude Code
+.claude/skills/start-issue/start.sh <issue番号>   # それ以外 (スキルが内部で呼ぶスクリプト)
 ```
 
+- worktree とブランチの作成、着手コミット、push、Draft PR 作成 (`resolve #<issue番号>` 入り)、環境構築 (`.env.local` のコピーと `npm ci`) までを行う
 - worktree は `.claude/worktrees/issue-<issue番号>` に作る。Issue ごとに作業ツリーが分かれるので、複数の Issue を並列でエージェントに任せられる
-- Claude Code では `/start-issue <issue番号>` を使う。このコマンドの実行から merge までの工程を、スキル (`.claude/skills/start-issue`) が順に進める
+- スキルはそのまま壁打ちから merge までの工程を順に進める (`.claude/skills/start-issue/SKILL.md`)
 - **仕様確認を始める前に実行する**。実装を始めてから打つと、設計の時間が計測から漏れる
 - 計測は PR 単位。担当者以外 (レビュワーの軽微な修正など) が同じ PR にコミットしても、そのまま含める
 - Issue への assign は担当の割り振りに使うもので、計測には使わない
