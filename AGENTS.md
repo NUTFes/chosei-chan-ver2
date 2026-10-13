@@ -12,9 +12,12 @@ AI エージェント向けの入口です。技術スタック・コマンド�
 - Issue に着手するときは、仕様確認の前に次を実行する (着手コミットの時刻がスループット計測の開始時刻になる)
 
   ```bash
-  scripts/start-issue.sh <issue番号>  # ブランチ作成 → 着手コミット (空) → push → Draft PR
+  scripts/start-issue.sh <issue番号>  # worktree 作成 → 着手コミット (空) → push → Draft PR
   ```
 
+  Claude Code では `/start-issue <issue番号>` を使う (merge までの工程を順に進めるスキル)
+
+- 作業は出力された worktree (`.claude/worktrees/issue-<issue番号>`) の中で行う
 - 以降の作業はその PR に積む。別の PR を作り直さない
 - Issue を起票するときは、Project への追加・`Size`・親 Epic・依存関係 (`Blocked by`) まで設定する
 - 日程や Issue を変更する前後に、次のコマンドで確認する

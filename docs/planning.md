@@ -57,12 +57,14 @@ node scripts/plan.mjs status
 
 Issue ごとに、**PR の最初のコミットから merge まで** の経過時間を計測します。休憩も工数に含めるので、除外はしません。
 
-設計 (工程 1) にはコミットが残らないため、着手時に空のコミットを打って開始時刻を記録します。次のコマンドが、ブランチ作成・着手コミット・push・Draft PR 作成 (`resolve #<issue番号>` 入り) までを行います。
+設計 (工程 1) にはコミットが残らないため、着手時に空のコミットを打って開始時刻を記録します。次のコマンドが、worktree とブランチの作成・着手コミット・push・Draft PR 作成 (`resolve #<issue番号>` 入り) までを行います。
 
 ```bash
 scripts/start-issue.sh <issue番号> [ブランチ名]
 ```
 
+- worktree は `.claude/worktrees/issue-<issue番号>` に作る。Issue ごとに作業ツリーが分かれるので、複数の Issue を並列でエージェントに任せられる
+- Claude Code では `/start-issue <issue番号>` を使う。このコマンドの実行から merge までの工程を、スキル (`.claude/skills/start-issue`) が順に進める
 - **仕様確認を始める前に実行する**。実装を始めてから打つと、設計の時間が計測から漏れる
 - 計測は PR 単位。担当者以外 (レビュワーの軽微な修正など) が同じ PR にコミットしても、そのまま含める
 - Issue への assign は担当の割り振りに使うもので、計測には使わない
@@ -70,6 +72,8 @@ scripts/start-issue.sh <issue番号> [ブランチ名]
 ```bash
 node scripts/plan.mjs throughput
 ```
+
+実績はどこにも保存しません。実行のたびに GitHub の PR (コミット時刻と merge 時刻) から計算し、ターミナルに表示します。
 
 - 主な指標は **稼働日あたりの消化枠数**。計画値は 3 枠/日
 - Issue ごとの所要時間は、1 枠 = 1〜1.5h の見積もりと比べる
