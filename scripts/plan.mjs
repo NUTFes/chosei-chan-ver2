@@ -18,11 +18,11 @@ query($owner: String!, $name: String!) {
         labels(first: 20) { nodes { name } }
         blockedBy(first: 50) { nodes { number } }
         blocking(first: 50) { nodes { number } }
-        timelineItems(itemTypes: [ASSIGNED_EVENT], first: 1) {
-          nodes { ... on AssignedEvent { createdAt } }
-        }
         closedByPullRequestsReferences(first: 5) {
-          nodes { number mergedAt commits(first: 1) { nodes { commit { authoredDate } } } }
+          nodes {
+            number mergedAt
+            commits(first: 1) { nodes { commit { authoredDate changedFilesIfAvailable } } }
+          }
         }
         projectItems(first: 5) {
           nodes {
@@ -62,9 +62,8 @@ function loadIssues() {
     const isEpic = n.labels.nodes.some((l) => l.name === 'epic')
     const sizeKey = Object.keys(SLOTS_BY_SIZE).find((k) => item.size?.name?.endsWith(k))
     const pr = n.closedByPullRequestsReferences.nodes.find((p) => p.mergedAt)
-    // 着手時刻 = 自分を assign した時刻。無ければ PR の最初のコミット時刻で代用する
-    const startedAt =
-      n.timelineItems.nodes[0]?.createdAt ?? pr?.commits.nodes[0]?.commit.authoredDate
+    // 着手時刻 = PR の最初のコミット。scripts/start-issue.sh が打つ空コミットを想定している
+    const first = pr?.commits.nodes[0]?.commit
     issues.set(n.number, {
       number: n.number,
       title: n.title,
@@ -78,7 +77,8 @@ function loadIssues() {
       target: item.target?.date,
       blockedBy: n.blockedBy.nodes.map((b) => b.number),
       blocking: n.blocking.nodes.map((b) => b.number),
-      startedAt,
+      startedAt: first?.authoredDate,
+      hasStartCommit: first?.changedFilesIfAvailable === 0,
       mergedAt: pr?.mergedAt,
       pr: pr?.number,
     })
@@ -181,10 +181,10 @@ function throughput(issues) {
   // 日付は JST で数える
   const jstDay = (iso) => new Date(Date.parse(iso) + 9 * 3600e3).toISOString().slice(0, 10)
   const hours = (i) => (Date.parse(i.mergedAt) - Date.parse(i.startedAt)) / 3600e3
-  console.log('■ Issue ごとのリードタイム (着手 → merge の経過時間。休憩・就寝も含む)')
+  console.log('■ Issue ごとの所要時間 (PR の最初のコミット → merge。休憩も含む)')
   for (const i of done) {
     console.log(
-      `  ${md(jstDay(i.mergedAt))} #${String(i.number).padEnd(3)} ${i.slots}枠 ${hours(i).toFixed(1).padStart(6)}h  PR #${i.pr}  ${i.title}`,
+      `  ${md(jstDay(i.mergedAt))} #${String(i.number).padEnd(3)} ${i.slots}枠 ${hours(i).toFixed(1).padStart(6)}h  PR #${i.pr}  ${i.title}${i.hasStartCommit ? '' : '  ※着手コミットなし'}`,
     )
   }
   const byDay = Map.groupBy(done, (i) => jstDay(i.mergedAt))
@@ -199,7 +199,7 @@ function throughput(issues) {
   console.log(
     `\n■ 実績: ${perDay.toFixed(1)}枠/稼働日 (計画 ${SLOTS_PER_DAY}枠/日, ${total}枠 / ${byDay.size}稼働日)`,
   )
-  console.log(`  リードタイム中央値: ${sorted[Math.floor(sorted.length / 2)].toFixed(1)}h`)
+  console.log(`  所要時間の中央値: ${sorted[Math.floor(sorted.length / 2)].toFixed(1)}h`)
   const remaining = [...issues.values()].filter((i) => i.open).reduce((s, i) => s + i.slots, 0)
   console.log(
     `  残り ${remaining}枠 → 実績ペースで あと ${Math.ceil(remaining / perDay)}稼働日 (計画ペースなら ${Math.ceil(remaining / SLOTS_PER_DAY)}稼働日)`,
@@ -215,6 +215,6 @@ else {
   console.log(`使い方:
   node scripts/plan.mjs status          マイルストーンごとの残り枠・日ごとの枠数・警告
   node scripts/plan.mjs impact <issue>  指定 Issue の先行 / 後続 (依存関係をたどった影響範囲)
-  node scripts/plan.mjs throughput      着手 → merge の実績と、実績ペースでの残り日数`)
+  node scripts/plan.mjs throughput      着手コミット → merge の実績と、実績ペースでの残り日数`)
   process.exit(command ? 1 : 0)
 }
