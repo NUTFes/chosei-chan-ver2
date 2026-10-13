@@ -62,7 +62,7 @@ function loadIssues() {
     const isEpic = n.labels.nodes.some((l) => l.name === 'epic')
     const sizeKey = Object.keys(SLOTS_BY_SIZE).find((k) => item.size?.name?.endsWith(k))
     const pr = n.closedByPullRequestsReferences.nodes.find((p) => p.mergedAt)
-    // 着手時刻 = PR の最初のコミット。scripts/start-issue.sh が打つ空コミットを想定している
+    // 着手時刻 = PR の最初のコミット。start-issue スキルが打つ空コミットを想定している
     const first = pr?.commits.nodes[0]?.commit
     issues.set(n.number, {
       number: n.number,
