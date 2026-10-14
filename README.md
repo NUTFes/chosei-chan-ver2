@@ -19,13 +19,4 @@ npm run storybook
 
 ## ルール
 
-- ブランチ名
-  - `{prefix}/{name}/{issueNo}`
-  - ex: feat/imaimai/25
-- コミットメッセージ
-  - `[{prefix}] {commit message}`
-  - ex: [fix] ボタンコンポーネントバグの修正
-
-- prefix
-  - feat: 新規開発
-  - fix: バグ修正
+Git 運用ルールは [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
