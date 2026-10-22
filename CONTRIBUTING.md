@@ -49,8 +49,10 @@
 - push 時の自動整形コミットは行いません。push の前に手元で次のコマンドを実行します。
 
   ```bash
-  npm run format -- "src/**/*.{ts,tsx,js,jsx}"
+  make format
   ```
+
+- push の前に `make check` を実行し、lint・整形チェック・テスト・build が成功することを確認します。
 
 ## リリース
 
