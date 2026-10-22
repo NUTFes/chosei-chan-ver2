@@ -14,16 +14,20 @@ description: Issue に着手し、壁打ちで実装計画を決めて Issue に
 
 ## 1. 着手して、壁打ちを始められる状態にする
 
-何よりも先に、次の 1 コマンドを実行します (着手コミットの時刻がスループット計測の開始時刻になるため)。
+何よりも先に、次の手順で着手します (着手コミットの時刻がスループット計測の開始時刻になるため)。Issue 本文や関連コードは、スクリプトを実行するまで読みません。
+
+1. Issue のタイトルだけを取得します (`gh issue view <issue番号> --json title --jq .title`)
+2. タイトルから `{内容}` を決めます (英小文字・数字のハイフン区切り、2〜4 語。ユーザーには尋ねません)
+3. 次のコマンドを実行します
 
 ```bash
-.claude/skills/start-issue/start.sh <issue番号>
+.claude/skills/start-issue/start.sh <issue番号> <内容>
 ```
 
 これだけで壁打ちの手前まで終わります。
 
 1. worktree (`.claude/worktrees/issue-<issue番号>`) とブランチの作成
-2. 空の着手コミット → push → Draft PR の作成 (`resolve #<issue番号>` 入り)
+2. 空の着手コミット → push → Draft PR の作成 (`resolve #<issue番号>` 入り、prefix に応じたラベル付与)
 3. 環境構築 (`.env.local` のコピー、`npm ci`)
 4. Issue 本文と、依存関係から見た影響範囲 (先行 / 後続) の表示
 
