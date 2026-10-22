@@ -37,12 +37,31 @@
 - 1 コミットの中身に合う prefix を選びます。ブランチの prefix と違っても構いません。
 - 着手コミット (`chore: #{issueNo} 着手`) は `start.sh` が打ちます。
 
+## Issue
+
+- 起票は `.github/ISSUE_TEMPLATE/` の種別テンプレートから行います。
+- タイトルは `[xxx] 内容` にします。
+- 起票時の Project / Size / 親 Epic / 依存関係の設定は [docs/planning.md](docs/planning.md) を参照してください。
+
 ## Pull Request
 
 - `develop` 向けに出します。着手時に `start.sh` が Draft で作ります。
 - タイトルは Issue のタイトルと同じにします (例: `[docs] Git運用ルールの明文化`)。本文に `resolve #{issueNo}` を入れます。
 - ラベルは prefix から付けます (上の表)。`start.sh` を通さずに PR を作った場合は手で付けます。
 - マージは人間が行います。マージコミットを作る方法 (Create a merge commit) を使います。
+
+## ラベル
+
+| ラベル          | 付ける対象 | 用途                                      |
+| --------------- | ---------- | ----------------------------------------- |
+| `enhancement`   | Issue / PR | 機能の追加・変更 (`feat`)                 |
+| `bug`           | Issue / PR | バグ修正 (`fix`)                          |
+| `documentation` | Issue / PR | ドキュメント (`docs`)                     |
+| `epic`          | Issue      | 親 Issue。`scripts/plan.mjs` が枠の計算から除外する |
+| `research`      | Issue      | 調査・検討                                |
+| `infra`         | Issue      | インフラ・デプロイ・アカウント関連 (他のラベルと併用可) |
+
+上の表にないラベル (`duplicate` / `good first issue` / `help wanted` / `invalid` / `question` / `wontfix`) は ver1 から残っているもので、使いません。
 
 ## 整形
 
