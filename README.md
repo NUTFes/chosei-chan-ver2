@@ -5,16 +5,18 @@
 ## Getting Started
 
 ```bash
-npm install
-npm run dev
+make setup
+make dev
 ```
+
+`make` でターゲット一覧を表示できます。
 
 ## Storybook Usage
 
 以下のコマンドでポート6006番にStorybookが起動します
 
 ```bash
-npm run storybook
+make storybook
 ```
 
 ## ルール

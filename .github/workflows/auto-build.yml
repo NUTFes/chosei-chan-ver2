@@ -1,34 +1,27 @@
-name: Build Test
+name: Check
 on:
+  pull_request:
+    branches:
+      - develop
   push:
     branches:
       - develop
 
 jobs:
- build:
-   runs-on: ubuntu-latest
-   steps:
-     - name: checkout
-       uses: actions/checkout@v3
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7
 
-     - name: setup-node
-       uses: actions/setup-node@v3
-       with:
-         node-version: 16
-         cache: npm
+      - name: setup-node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
 
-     - name: cache-node-modules
-       uses: actions/cache@v3
-       id: node_modules_cache_id
-       env:
-         cache-name: cache-node-modules
-       with:
-         path: '**/node_modules'
-         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: make setup
 
-     - name: npm-install
-       if: ${{ steps.node_modules_cache_id.outputs.cache-hit != 'true' }}
-       run: npm i
-
-     - name: app-build
-       run: npm run build
+      - name: Check
+        run: make check
