@@ -66,6 +66,8 @@
 
 1. 前のタグ以降の変更を確認して番号を決めます。
 
+   初回 (`v2.0.0`) は前のタグが無いので、この手順は飛ばします (全部が初公開の内容になります)。`git describe` はタグが無いとエラーになり、ver1 の古いタグ (`2023.07.29-*`) が手元に残っている clone では、エラーにならずに古いタグを返してしまうためです。
+
    ```bash
    git fetch origin --tags
    git log "$(git describe --tags --abbrev=0 origin/develop)..origin/develop" --oneline

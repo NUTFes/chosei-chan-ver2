@@ -50,7 +50,7 @@ git commit --allow-empty -m "chore: #${issue} 着手"
 git push -u origin "$branch"
 
 body="$(sed "s/resolve #0/resolve #${issue}/" .github/pull_request_template.md)"
-pr="$(gh pr create --draft --base develop --title "$title" --body "$body" "${label_args[@]}")"
+pr="$(gh pr create --draft --base develop --title "$title" --body "$body" ${label_args[@]+"${label_args[@]}"})"
 
 # 環境変数ファイルは git 管理外なので、メインの作業ツリーにあれば持ってくる
 if [ -f "${root}/.env.local" ]; then
