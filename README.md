@@ -4,6 +4,10 @@
 
 ## Getting Started
 
+`make setup` は、Herdr が未導入なら[公式インストーラ](https://herdr.dev/install.sh)で `~/.local/bin` にインストールし、続けて依存パッケージを入れます。インストール先は環境変数 `HERDR_INSTALL_DIR` で変更できます。
+
+`~/.local/bin` (インストール先を変更した場合はそのディレクトリ) を PATH に追加してください。Herdr の更新は `herdr update` で行います。
+
 ```bash
 make setup
 make dev

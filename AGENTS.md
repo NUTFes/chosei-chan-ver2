@@ -23,6 +23,9 @@ AI エージェント向けの入口です。技術スタック・コマンド�
 - 計画どおりに進められないと分かったら、実装担当もレビュー担当も自分で計画を変えず、設計担当へ戻す
 - マージは人間が行う
 - スキルの実体は `.claude/skills/` にあり、`.agents/skills` はそこへのシンボリックリンク
+- 外部スキル (現在は `herdr`) も `.claude/skills/` にコミットしてあり、出どころは `skills-lock.json` に記録している。中身を手で編集しない
+- 外部スキルの追加: `npx skills add <owner/repo> -s <スキル名> -a claude-code -a codex -y`
+- 外部スキルの更新: `make skills-update` を実行し、差分を PR にする
 
 ## マイルストーンとタスクの見積もり
 
