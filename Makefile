@@ -1,12 +1,18 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help setup dev build lint lint-fix format format-check test storybook check
+.PHONY: help setup skills-update dev build lint lint-fix format format-check test storybook check
 
 help: ## ターゲット一覧を表示する
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z-]+:.*## / {printf "  %-14s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-setup: ## 依存パッケージを入れる
-	npm ci
+setup: ## mise のツール (Node・Herdr) と依存パッケージを入れる
+	@command -v mise >/dev/null 2>&1 || { echo "mise が必要です。https://mise.jdx.dev/getting-started.html を参照して導入してください"; exit 1; }
+	mise trust
+	mise install
+	mise exec -- npm ci
+
+skills-update: ## 外部スキルを最新版に更新する
+	npx skills update -p -y
 
 dev: ## 開発サーバーを起動する
 	npm run dev

@@ -4,6 +4,10 @@
 
 ## Getting Started
 
+前提として、[公式の導入手順](https://mise.jdx.dev/getting-started.html) に従って mise をインストールし、シェルで有効にしてください。
+
+`make setup` で Node 24・Herdr と依存パッケージが入ります。
+
 ```bash
 make setup
 make dev

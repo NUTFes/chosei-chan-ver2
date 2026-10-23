@@ -56,7 +56,8 @@ pr="$(gh pr create --draft --base develop --title "$title" --body "$body" ${labe
 if [ -f "${root}/.env.local" ]; then
   cp "${root}/.env.local" .env.local
 fi
-npm ci --no-audit --no-fund >/dev/null
+mise trust
+mise exec -- npm ci --no-audit --no-fund >/dev/null
 
 echo
 echo "===== Issue #${issue} ====="
