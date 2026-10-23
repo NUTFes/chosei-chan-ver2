@@ -5,11 +5,18 @@
 help: ## ターゲット一覧を表示する
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z-]+:.*## / {printf "  %-14s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-setup: ## mise のツール (Node・Herdr) と依存パッケージを入れる
-	@command -v mise >/dev/null 2>&1 || { echo "mise が必要です。https://mise.jdx.dev/getting-started.html を参照して導入してください"; exit 1; }
-	mise trust
-	mise install
-	mise exec -- npm ci
+setup: ## Herdr (未導入なら) と依存パッケージを入れる
+	@set -e; \
+	if command -v herdr >/dev/null 2>&1; then \
+		echo "Herdr は導入済みです ($$(herdr --version))"; \
+	else \
+		installer=$$(mktemp); \
+		trap 'rm -f "$$installer"' 0; \
+		trap 'exit 1' 1 2 15; \
+		curl -fsSL https://herdr.dev/install.sh -o "$$installer"; \
+		sh "$$installer"; \
+	fi
+	npm ci
 
 skills-update: ## 外部スキルを最新版に更新する
 	npx skills update -p -y

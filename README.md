@@ -4,9 +4,9 @@
 
 ## Getting Started
 
-前提として、[公式の導入手順](https://mise.jdx.dev/getting-started.html) に従って mise をインストールし、シェルで有効にしてください。
+`make setup` は、Herdr が未導入なら[公式インストーラ](https://herdr.dev/install.sh)で `~/.local/bin` にインストールし、続けて依存パッケージを入れます。インストール先は環境変数 `HERDR_INSTALL_DIR` で変更できます。
 
-`make setup` で Node 24・Herdr と依存パッケージが入ります。
+`~/.local/bin` (インストール先を変更した場合はそのディレクトリ) を PATH に追加してください。Herdr の更新は `herdr update` で行います。
 
 ```bash
 make setup
